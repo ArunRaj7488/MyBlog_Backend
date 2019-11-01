@@ -1,4 +1,5 @@
 const Joi=require('joi');
+Joi.ObjectId = require("joi-objectid")(Joi)
 const mongoose=require('mongoose');
 
 const postSchema=new mongoose.Schema({
@@ -12,9 +13,8 @@ const postSchema=new mongoose.Schema({
         type:Date,
         default:Date.now()
     },
-    descreption:{
-        tpye:String,
-        
+    description:{
+        type:String,        
     },
     tags:[{              
         type:String,
@@ -24,19 +24,25 @@ const postSchema=new mongoose.Schema({
         {
             type:mongoose.Schema.Types.ObjectId,
             ref:'User'
-        }
+        },
+        comment:[{
+            type:mongoose.Schema.Types.ObjectId,
+            ref:'Comment'
+        }]
     
 })
  const Post=mongoose.model('Post',postSchema);
  
- async function validatSchema(post)
+ function validatSchema(post)
  {
      const schema={
          title:Joi.string().min(3).required(),
-         date:Joi.date().required(),
-         descreption:Joi.string().required()
+         description:Joi.string().required(),
+         user: Joi.ObjectId().required(),
+         comment:Joi.array().items(Joi.ObjectId()),
+         tags: Joi.array().items(Joi.string())
      }
-     return await Joi.validate(post,schema);
+     return Joi.validate(post,schema);
  }
  
  exports.Post=Post;

@@ -21,13 +21,13 @@ const userSchema=new mongoose.Schema({
 });
 const User= mongoose.model('User',userSchema);
 
- async function validateUser(user){
+ function validateUser(user){
      const schema={
          name:Joi.string().min(3).required(),
          email:Joi.string().min(8).required(),
          phone:Joi.number().required()
         }
-        return await Joi.validate(user,schema)
+        return Joi.validate(user,schema)
  }
 exports.User=User;
 exports.validate=validateUser;
